@@ -7,7 +7,7 @@ variables:
   DEPLOY_PATH: '/var/www/html'
 
 pool:
-  name: vm-week13-a2
+  name: ubuntu-nginx-ssh
 
 stages:
   - stage: Deploy

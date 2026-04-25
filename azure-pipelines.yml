@@ -7,7 +7,7 @@ variables:
   DEPLOY_PATH: '/var/www/html'
 
 pool:
-  name: ubuntu-nginx-ssh
+  name: Azure-Devops-Pipeline
 
 stages:
   - stage: Deploy

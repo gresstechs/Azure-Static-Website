@@ -1,0 +1,42 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  DEPLOY_PATH: '/var/www/html'
+
+pool:
+  name: Azure-Devops-Pipeline
+
+stages:
+  - stage: Deploy
+    displayName: Deploy Static Website
+    jobs:
+      - job: DeployToNginx
+        displayName: Copy files to Nginx VM
+        steps:
+
+          - checkout: self
+            displayName: Checkout source code
+
+          - task: CopyFilesOverSSH@0
+            displayName: Copy website files to VM
+            inputs:
+              sshEndpoint: ubuntu-nginx-ssh
+              sourceFolder: '$(Build.SourcesDirectory)'
+              contents: '**'
+              targetFolder: '$(DEPLOY_PATH)'
+              cleanTargetFolder: true
+              overwrite: true
+
+          - task: SSH@0
+            displayName: Verify deployment on VM
+            inputs:
+              sshEndpoint: ubuntu-nginx-ssh
+              runOptions: inline
+              inline: |
+                echo "=== Files in /var/www/html ==="
+                ls -la /var/www/html
+                echo "=== Nginx status ==="
+                sudo systemctl status nginx --no-pager
